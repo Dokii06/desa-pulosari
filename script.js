@@ -1,3 +1,4 @@
+// nabbar.js
 fetch("partials/navbar.html")
     .then(res => res.text())
     .then(data => {
@@ -46,6 +47,26 @@ fetch("partials/navbar.html")
             });
         });
     });
+
+
+
+
+// footer.js
+fetch("partials/footer.html")
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+
+        // Tambahkan event listener untuk smooth scroll ke atas
+        const backToTopButton = document.getElementById("back-to-top");
+        if (backToTopButton) {
+            backToTopButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })
+    .catch(err => console.error('Error loading footer:', err));
 
 
 // script.js
