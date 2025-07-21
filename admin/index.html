@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Desa Pulosari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-green-600 to-green-700 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50">
+        <div class="p-6 border-b border-green-500">
+            <div class="flex items-center space-x-3">
+                <img src="/assets/logo-desa2-bgremove-Photoroom.jpg" alt="Logo Desa" class="w-12 h-12 rounded-full">
+                <div>
+                    <h2 class="font-poppins font-bold text-lg">Admin Panel</h2>
+                    <p class="text-green-200 text-sm">Desa Pulosari</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="mt-6">
+            <ul class="space-y-2">
+
+                <!-- Dashboard -->
+                <li>
+                <button onclick="showSection('dashboard', event)" class="nav-btn w-full flex items-center px-6 py-3 text-left hover:bg-green-500 transition-colors duration-200 active">
+                    <i class="fas fa-tachometer-alt w-5 mr-3"></i>
+                    Dashboard
+                </button>
+                </li>
+
+                <!-- Kelola Berita -->
+                <li>
+                <button onclick="toggleDropdown('beritaDropdown')" class="w-full flex items-center px-6 py-3 text-left hover:bg-green-500 transition-colors duration-200">
+                    <i class="fas fa-newspaper w-5 mr-3"></i>
+                    Kelola Berita
+                    <i class="fas fa-caret-down ml-auto"></i>
+                </button>
+                <ul id="beritaDropdown" class="hidden ml-10 mt-2 space-y-1 text-sm text-gray-600">
+                    <li><button onclick="showSection('berita-list', event)" class="hover:text-green-700">Daftar Berita</button></li>
+                    <li><button onclick="showSection('tambah-berita')" class="hover:text-green-700">Tambah Berita</button></li>
+                </ul>
+                </li>
+
+                <!-- Kelola Galeri -->
+                <li>
+                <button onclick="toggleDropdown('galeriDropdown')" class="w-full flex items-center px-6 py-3 text-left hover:bg-green-500 transition-colors duration-200">
+                    <i class="fas fa-images w-5 mr-3"></i>
+                    Kelola Galeri
+                    <i class="fas fa-caret-down ml-auto"></i>
+                </button>
+                <ul id="galeriDropdown" class="hidden ml-10 mt-2 space-y-1 text-sm text-gray-600">
+                    <li><button onclick="showSection('galeri-foto')" class="hover:text-green-700">Galeri Foto</button></li>
+                    <li><button onclick="showSection('tambah-foto')" class="hover:text-green-700">Tambah Foto</button></li>
+                </ul>
+                </li>
+
+                <!-- Profil Desa -->
+                <li>
+                <button onclick="toggleDropdown('profilDropdown')" class="w-full flex items-center px-6 py-3 text-left hover:bg-green-500 transition-colors duration-200">
+                    <i class="fas fa-info-circle w-5 mr-3"></i>
+                    Profil Desa
+                    <i class="fas fa-caret-down ml-auto"></i>
+                </button>
+                <ul id="profilDropdown" class="hidden ml-10 mt-2 space-y-1 text-sm text-gray-600">
+                    <li><button onclick="showSection('sejarah')" class="hover:text-green-700">Sejarah Desa</button></li>
+                    <li><button onclick="showSection('statistik')" class="hover:text-green-700">Statistik</button></li>
+                    <li><button onclick="showSection('kependudukan')" class="hover:text-green-700">Kependudukan</button></li>
+                    <li><button onclick="showSection('pemerintahan')" class="hover:text-green-700">Pemerintahan Desa</button></li>
+                    <li><button onclick="showSection('potensi')" class="hover:text-green-700">Potensi Desa</button></li>
+                    <li><button onclick="showSection('umkm')" class="hover:text-green-700">UMKM Desa</button></li>
+                </ul>
+                </li>
+
+                <!-- Pengguna -->
+                <li>
+                <button onclick="showSection('users')" class="nav-btn w-full flex items-center px-6 py-3 text-left hover:bg-green-500 transition-colors duration-200">
+                    <i class="fas fa-users w-5 mr-3"></i>
+                    Pengguna
+                </button>
+                </li>
+            </ul>
+        </nav>
+
+
+        <div class="absolute bottom-4 left-0 right-0 px-6">
+            <button onclick="logout()" class="w-full flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
+                <i class="fas fa-sign-out-alt w-5 mr-3"></i>
+                Keluar
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile menu overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="closeSidebar()"></div>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen">
+        <!-- Top Bar -->
+        <header class="bg-white shadow-lg">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center">
+                    <button onclick="toggleSidebar()" class="lg:hidden mr-4 text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="font-poppins font-bold text-2xl text-gray-800">Dashboard Admin</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="font-semibold text-gray-800">Admin Desa</p>
+                        <p class="text-sm text-gray-600" id="current-date"></p>
+                    </div>
+                    <img src="assets/logo-desa2-bgremove-Photoroom.jpg" alt="Admin" class="w-10 h-10 rounded-full">
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section p-6">
+            <div class="mb-8">
+                <h2 class="font-poppins font-bold text-3xl text-gray-800 mb-2">Selamat Datang di Dashboard</h2>
+                <p class="text-gray-600">Kelola konten website Desa Pulosari dengan mudah</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100">Total Berita</p>
+                            <p class="text-3xl font-bold" id="total-news">3</p>
+                        </div>
+                        <i class="fas fa-newspaper text-4xl text-blue-200"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100">Total Galeri</p>
+                            <p class="text-3xl font-bold" id="total-gallery">5</p>
+                        </div>
+                        <i class="fas fa-images text-4xl text-green-200"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100">Pengunjung Hari Ini</p>
+                            <p class="text-3xl font-bold">127</p>
+                        </div>
+                        <i class="fas fa-users text-4xl text-purple-200"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-orange-100">Total Halaman</p>
+                            <p class="text-3xl font-bold">8</p>
+                        </div>
+                        <i class="fas fa-file-alt text-4xl text-orange-200"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-poppins font-semibold text-xl text-gray-800 mb-4">Aktivitas Terbaru</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-medium text-gray-800">Berita baru ditambahkan</p>
+                                <p class="text-sm text-gray-600">2 jam yang lalu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-edit text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-medium text-gray-800">Profil desa diperbarui</p>
+                                <p class="text-sm text-gray-600">5 jam yang lalu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-image text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-medium text-gray-800">Foto galeri ditambahkan</p>
+                                <p class="text-sm text-gray-600">1 hari yang lalu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-poppins font-semibold text-xl text-gray-800 mb-4">Akses Cepat</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="showSection('news')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-plus text-blue-500 text-2xl mb-2"></i>
+                            <p class="font-medium text-blue-700">Tambah Berita</p>
+                        </button>
+                        <button onclick="showSection('gallery')" class="p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-images text-green-500 text-2xl mb-2"></i>
+                            <p class="font-medium text-green-700">Kelola Galeri</p>
+                        </button>
+                        <button onclick="showSection('profile')" class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-edit text-purple-500 text-2xl mb-2"></i>
+                            <p class="font-medium text-purple-700">Edit Profil</p>
+                        </button>
+                        <button onclick="viewWebsite()" class="p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-external-link-alt text-orange-500 text-2xl mb-2"></i>
+                            <p class="font-medium text-orange-700">Lihat Website</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Management Section -->
+        <div id="news-section" class="content-section p-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-poppins font-bold text-3xl text-gray-800">Kelola Berita</h2>
+                <button onclick="showAddNewsModal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i>
+                    Tambah Berita
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg">
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-4 font-semibold text-gray-700">Gambar</th>
+                                    <th class="text-left py-4 font-semibold text-gray-700">Judul</th>
+                                    <th class="text-left py-4 font-semibold text-gray-700">Tanggal</th>
+                                    <th class="text-left py-4 font-semibold text-gray-700">Status</th>
+                                    <th class="text-left py-4 font-semibold text-gray-700">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="news-table-body">
+                                <!-- News items will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Management Section -->
+        <div id="gallery-section" class="content-section p-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-poppins font-bold text-3xl text-gray-800">Kelola Galeri</h2>
+                <button onclick="showAddGalleryModal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i>
+                    Tambah Foto
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
+                <!-- Gallery items will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Profile Management Section -->
+        <div id="profile-section" class="content-section p-6 hidden">
+            <h2 class="font-poppins font-bold text-3xl text-gray-800 mb-6">Profil Desa</h2>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <form id="profile-form">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Nama Desa</label>
+                            <input type="text" id="village-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" value="Desa Pulosari">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Kecamatan</label>
+                            <input type="text" id="district" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" value="Telagasari">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Kabupaten</label>
+                            <input type="text" id="regency" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" value="Karawang">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Provinsi</label>
+                            <input type="text" id="province" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" value="Jawa Barat">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Deskripsi Desa</label>
+                        <textarea id="village-description" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">Desa Pulosari merupakan salah satu desa yang terletak di Kecamatan Telagasari, Kabupaten Karawang, Jawa Barat. Desa ini dikenal dengan lingkungan yang asri, masyarakat yang ramah, serta potensi pertanian yang melimpah. Berbagai fasilitas umum seperti balai desa, sekolah, masjid, dan pasar tradisional tersedia untuk mendukung aktivitas dan kebutuhan sehari-hari warga. Saat ini, Desa Pulosari terus berkembang menuju desa yang mandiri dan sejahtera melalui berbagai program pembangunan dan pemberdayaan masyarakat yang berkelanjutan.</textarea>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
+                            <i class="fas fa-save mr-2"></i>
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Management Section -->
+        <div id="users-section" class="content-section p-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-poppins font-bold text-3xl text-gray-800">Kelola Pengguna</h2>
+                <button onclick="showAddUserModal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i>
+                    Tambah Pengguna
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-4 font-semibold text-gray-700">Nama</th>
+                                <th class="text-left py-4 font-semibold text-gray-700">Email</th>
+                                <th class="text-left py-4 font-semibold text-gray-700">Role</th>
+                                <th class="text-left py-4 font-semibold text-gray-700">Status</th>
+                                <th class="text-left py-4 font-semibold text-gray-700">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4">Admin Desa</td>
+                                <td class="py-4">admin@pulosari.id</td>
+                                <td class="py-4"><span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Super Admin</span></td>
+                                <td class="py-4"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Aktif</span></td>
+                                <td class="py-4">
+                                    <button class="text-blue-600 hover:text-blue-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add News Modal -->
+    <div id="add-news-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-poppins font-bold text-2xl text-gray-800">Tambah Berita Baru</h3>
+                <button onclick="closeModal('add-news-modal')" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="add-news-form">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Judul Berita</label>
+                        <input type="text" id="news-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Gambar</label>
+                        <input type="file" id="news-image" accept="image/*" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Konten Berita</label>
+                        <textarea id="news-content" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-6 space-x-3">
+                    <button type="button" onclick="closeModal('add-news-modal')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-colors duration-200">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Gallery Modal -->
+    <div id="add-gallery-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-lg mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-poppins font-bold text-2xl text-gray-800">Tambah Foto Galeri</h3>
+                <button onclick="closeModal('add-gallery-modal')" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="add-gallery-form">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Judul Foto</label>
+                        <input type="text" id="gallery-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Upload Foto</label>
+                        <input type="file" id="gallery-image" accept="image/*" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-6 space-x-3">
+                    <button type="button" onclick="closeModal('add-gallery-modal')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-colors duration-200">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let newsData = [
+            {
+                id: 1,
+                title: "Kepala Desa Terpilih Baru di Desa Pulosari",
+                image: "assets/berita1.jpg",
+                date: "5 Juli 2025",
+                content: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto asperiores explicabo nam fugit tempora. Voluptas architecto nisi quibusdam consequatur voluptate.",
+                status: "published"
+            },
+            {
+                id: 2,
+                title: "Wujud Abdurrahman Setelah Masuk Hai Desa",
+                image: "assets/berita2.jpg",
+                date: "2 Juli 2025",
+                content: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto asperiores explicabo nam fugit tempora. Voluptas architecto nisi quibusdam consequatur voluptate.",
+                status: "published"
+            },
+            {
+                id: 3,
+                title: "VIRAL!!! PROGRAMMER MALAS NGODING",
+                image: "assets/berita3.jpg",
+                date: "29 Juni 2025",
+                content: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto asperiores explicabo nam fugit tempora. Voluptas architecto nisi quibusdam consequatur voluptate.",
+                status: "published"
+            }
+        ];
+
+        let galleryData = [
+            {
+                id: 1,
+                title: "Jum'at Bersih Desa Pulosari",
+                image: "assets/galeri1.jpeg"
+            },
+            {
+                id: 2,
+                title: "Kegiatan di Kantor Desa Pulosari",
+                image: "assets/galeri2.jpg"
+            },
+            {
+                id: 3,
+                title: "Persawahan Desa Pulosari",
+                image: "assets/galeri3.jpeg"
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDate();
+            loadNewsTable();
+            loadGalleryGrid();
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Utility functions
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // News management functions
+        function loadNewsTable() {
+            const tbody = document.getElementById('news-table-body');
+            tbody.innerHTML = '';
+            newsData.forEach(news => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100';
+                row.innerHTML = `
+                    <td class="py-4"><img src="${news.image}" alt="${news.title}" class="w-16 h-16 object-cover rounded-lg"></td>
+                    <td class="py-4">${news.title}</td>
+                    <td class="py-4">${news.date}</td>
+                    <td class="py-4"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">${news.status}</span></td>
+                    <td class="py-4">
+                        <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editNews(${news.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800" onclick="deleteNews(${news.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle("hidden");
+        }
+
+        function showSection(sectionName, event) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-green-500');
+            });
+
+            event.target.closest('.nav-btn').classList.add('active', 'bg-green-500');
+        }
+    </script>
